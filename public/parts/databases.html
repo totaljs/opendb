@@ -1,0 +1,114 @@
+<style>
+	.~PATH~ .listing section > i { width: 14px; text-align: center; }
+</style>
+
+<div data-scope="~PATH~" class="~PATH~">
+	<header>
+		<div class="toolbar pull-right" style="margin-top:12px">
+			<button class="exec" data-exec="?/query"><i class="fas fa-search"></i>@(Query browser)</button>
+		</div>
+		<label><i class="fas fa-database"></i>@(Databases)</label>
+	</header>
+	<div data---="viewbox__common.page__parent:auto;margin:110;scrollbar:1;visibleY:0" class="invisible">
+		<div class="padding">
+			<div data-bind="?.groups__template">
+				<script type="text/html">
+					{{ if value && value.length }}
+						{{ foreach g in value }}
+							<div class="caption m">
+								<label>{{ g.name }}</label>
+							</div>
+							<div class="listing2 m">
+								{{ foreach m in g.items }}
+								<figure class="fs12 exec" data-exec="?/query" data-id="{{ m.name }}">
+									<section>
+										<span class="pull-right monospace fs11">{{ m.dtupdated | format('[ts]') }}</span>
+										{{ if m.type === 'inmemory' }}
+										<span class="pull-right gray monospace fs11 right mr10">
+											{{ m.count | counter }} x
+										</span>
+										{{ else }}
+										<span class="pull-right gray monospace fs11 right mr10" title="@(Files): {{ m.count }}">
+											{{ m.size | filesize }}
+										</span>
+										{{ fi }}
+										<i class="{{ if m.type === 'stats' }}fas fa-chart-bar{{ else if m.type === 'inmemory' }}fa fa-microchip{{ else }}far fa-file-alt{{ fi }} mr5"></i><b>{{ m.name }}</b>
+									</section>
+								</figure>
+								{{ end }}
+							</div>
+						{{ end }}
+					{{ else }}
+						<div class="empty">
+							<i class="fa fa-database"></i>
+							<div>@(No databases)</div>
+							<summary>@(OpenDB does not contain any databases yet)</summary>
+						</div>
+					{{ fi }}
+				</script>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			WAPI('list', function(response) {
+
+				var groups = [];
+				var tmp = {};
+				for (var item of response) {
+					if (tmp[item.type])
+						tmp[item.type].push(item);
+					else
+						tmp[item.type] = [item];
+				}
+
+				for (var key in tmp) {
+					tmp[key].quicksort('name');
+					var name = '';
+					switch (key) {
+						case 'db':
+							name = '@(Document databases)';
+							break;
+						case 'stats':
+							name = '@(Statistics)';
+							break;
+						case 'inmemory':
+							name = '@(In-memory databases)';
+							break;
+					}
+
+					groups.push({ id: key, name: name, items: tmp[key] });
+				}
+
+				groups.quicksort('name');
+
+				SET('?.items', response);
+				SET('?.groups', groups);
+			});
+		};
+
+		exports.query = function(el) {
+			var model = GET('?');
+			var id = el.attrd('id');
+			var db = id ? model.items.findItem('name', id) : null;
+			SET('?.selected', db);
+			var win = {};
+			win.id = GUID(10);
+			win.cachekey = 'queryform';
+			win.title = '@(Query browser)';
+			win.actions = { minimize: false, maximize: true, move: true, resize: true, close: true, menu: false, autosave: true };
+			win.offset = { x: WW / 2 - 300 >> 0, y: WH / 2 - 200 >> 0, width: 600, height: 400 };
+			win.html = '<div data-im' + 'port="url:/forms/query.html"></div>';
+			PUSH('common.windows', win);
+		};
+
+	});
+</script>

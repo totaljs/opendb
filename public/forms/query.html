@@ -1,0 +1,176 @@
+<style>
+	.queryform .query { padding: 10px; border-bottom: 1px solid #E0E0E0; }
+	.queryform .execute { float: right; width: 90px; height: 60px; background-color: #F8F8F8; border-left: 1px solid #E0E0E0; line-height: 24px; text-align: center; border-bottom: 1px solid #E0E0E0; font-size: 20px; cursor: pointer; padding: 10px 0 0; }
+	.queryform .execute span { display: block; font-size: 10px; color: gray; }
+	.queryform .execute:hover { background-color: #F0F0F0; }
+	.queryform .filter, .queryform .fields { height: 30px; border-bottom: 1px solid #E0E0E0; margin-right: 120px; position: relative; }
+	.queryform .fields { margin-left: 80px; }
+	.queryform .take, .queryform .skip { height: 30px; border-bottom: 1px solid #E0E0E0; float: right; width: 60px; border-left: 1px solid #E0E0E0; position: relative; font-weight: bold; }
+	.queryform .sort { height: 30px; border-bottom: 1px solid #E0E0E0; float: right; width: 120px; border-left: 1px solid #E0E0E0; position: relative; }
+	.queryform .sort i { cursor: pointer; }
+	.queryform .sort i:hover { color: #000000; }
+	.queryform .first input, .queryform .second input { width: 100%; border: 0; padding: 0 10px; margin: 0; background-color: transparent; height: 29px; outline: 0; font-family: Menlo; font-size: 11px; }
+	.queryform .take input, .queryform .skip input, .queryform .sort input { text-align: center; padding: 0 5px; }
+	.queryform .first, .queryform .second { height: 30px; margin-right: 90px; }
+	.queryform .take i, .queryform .skip i, .queryform .sort i, .queryform .filter i { position: absolute; right: 8px; top: 9px; font-size: 10px; color: gray; }
+	.queryform .options { float: left; width: 80px; font-size: 11px; height: 30px; line-height: 28px; text-align: left; border-bottom: 1px solid #E0E0E0; font-weight: bold; border-right: 1px solid #E0E0E0; background-color: #F8F8F8; cursor: pointer; }
+	.queryform .options i { margin: 0 5px 0 10px; }
+	.queryform input:disabled { background-color: #F8F8F8; }
+	.queryform dl { margin: 10px 10px 0; font-size: 11px; float: left; width: 180px; border-right: 1px solid #E0E0E0; }
+	.queryform dt i, .queryform dd i { width: 12px; margin-right: 0; text-align: center; margin-right: 4px; color: $color; }
+	.queryform table { border: 1px solid #E0E0E0; margin: 10px; display: inline-block; width: auto !important; }
+	.queryform table tr:first-child td { border-top: 0; }
+	.queryform table td { max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+	.queryform table td:first-child { border-right: 1px solid #E0E0E0; background-color: rgba(0,0,0,0.02); }
+	.queryform table tr:last-child td { border-bottom: 0; }
+	.queryform .doc { font-family: Menlo; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px; cursor: pointer; color: gray; }
+	.queryform .doc:hover { background-color: #F0F0F0; }
+	.queryform .doc:hover .db-line { background-color: white; }
+	.queryform pre { background-color: white; padding: 0 10px; border-radius: 2px; cursor: text; color: black; tab-size: 2; overflow: hidden; margin: 10px; }
+	.queryform .doc > span { position: relative; display: inline-block; }
+	.queryform .doc-row { color: #888; display: block; text-align: right; padding-right: 5px; font-family: Arial; font-size: 10px; }
+	.queryform .doc-object { color: #1A8B95; }
+	.queryform .doc-uid { color: #1A4795; }
+	.queryform .doc-string { color: #9C251D; }
+	.queryform .doc-number { color: #2F6447; }
+	.queryform .doc-date { color: #4C167F; }
+	.queryform .doc-boolean { color: #1B7F16; }
+	.queryform .doc-null { color: gray; font-style: italic; }
+	.queryform .doc-line { color: black; width: 30px; text-align: right; padding-right: 5px; float: left; font-size: 9px; background-color: #F0F0F0; margin-right: 3px; overflow: hidden; margin-top: 1px; }
+</style>
+
+<div data-scope="? queryform__init:?/reload">
+	<div class="queryform">
+		<div class="query" style="height:185px">
+			<div style="height:120px;overflow:hidden">
+				<div data---="codemirror__?.code__height:120;linenumbers:false;type:javascript"></div>
+			</div>
+			<div class="row" style="margin-top:10px">
+				<div class="col-md-3">
+					<button name="send" class="button b exec" data-exec="?/exec" style="height:28px;padding:0 10px;line-height:28px;font-size:12px">@(EXECUTE)</button>
+				</div>
+				<div class="col-md-9 right fs12">
+					<div style="margin-top:10px">
+						<a href="https://docs.totaljs.com/opendb/" target="_blank" class="gray"><i class="fa fa-book mr5"></i>@(Documentation)</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div data---="viewbox__?.response__parent:.ui-windows-body;scrollbar:1;margin:185" class="invisible">
+			<div data-bind="!?.response__template">
+				<script type="text/html">
+					{{ if value && value.length }}
+					<table class="table table-small">
+						<tbody>
+						{{ foreach m in value }}
+							<tr class="doc exec" data-exec="?/detail" data-index="{{ $index }}" data-search="{{ m.search }}">
+								{{ m.HTML | raw }}
+							</tr>
+						{{ end }}
+						</tbody>
+					</table>
+					{{ else }}
+						<div style="padding:10px">
+							<div class="empty">
+								<i class="fa fa-database"></i>
+								<div>@(No result)</div>
+								<summary>@(Try to update filter)</summary>
+							</div>
+						</div>
+					{{ fi }}
+				</script>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('? queryform', function(exports) {
+
+		exports.reload = function() {
+
+			var selected = pagedatabases.selected;
+			var code = '';
+
+			if (selected) {
+				if (selected.type === 'stats') {
+					code = `{
+	db: '{0}',
+	type: 'stats_daily',
+	take: 50
+}`.format(selected.name);
+
+				} else if (selected.type === 'inmemory') {
+					code = `{
+	db: '{0}',
+	type: 'inmemory_find',
+	filter: 'true',
+	filterarg: {},
+	take: 50
+}`.format(selected.name);
+
+				} else if (selected.type === 'db') {
+					code = `{
+	db: '{0}',
+	type: 'find',
+	filter: 'true',
+	filterarg: {},
+	take: 50
+}`.format(selected.name);
+
+			}
+		} else {
+						code = `{
+	db: 'test',
+	type: 'find',
+	filter: 'true',
+	filterarg: {},
+	take: 50
+}`;
+			}
+
+			SET('?.code', code);
+		};
+
+		exports.exec = function(el) {
+
+			var parent = el.closest('.queryform');
+			var model = GET('?');
+			var obj = new Function('return ' + model.code)();
+
+			AJAX(QUERIFY('POST /', { token: NAV.query.token }), obj, function(response, err) {
+
+				var output = response;
+
+				if (!(output instanceof Array))
+					output = output ? [{ count: output }] : [];
+
+				for (var i = 0; i < output.length; i++) {
+					var row = output[i];
+					row.HTML = FUNC.formatrow(row, i + 1, 20);
+				}
+
+				SET('?.response', output);
+				parent.SETTER('viewbox/scrolltop @hideloading', 0);
+			});
+		};
+
+		exports.detail = function(el) {
+
+			var index = +el.attrd('index');
+			var colgroups = el.find('td').length;
+			var next = el.next();
+
+			if (next.hclass('doc-detail')) {
+				next.tclass('hidden');
+				return;
+			}
+
+			var parent = el.closest('.viewer');
+			var row = GET('?.response')[index];
+			el.after('<tr class="doc-detail"><td colspan="{0}"><pre>{1}</pre></td></tr>'.format(colgroups, FUNC.formatjson(row, 0)));
+		};
+
+	});
+
+</script>
