@@ -16,7 +16,7 @@ NEWSCHEMA('Setup', function(schema) {
 	schema.define('name', String, true);
 	schema.define('token', String, true);
 	schema.define('path', String, true);
-	schema.define('tokens', '[Token]', true);
+	schema.define('tokens', '[Token]');
 	schema.define('log', Boolean);
 	schema.define('log_requests', Boolean);
 	schema.define('allow_tms', Boolean);
