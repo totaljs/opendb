@@ -8,7 +8,7 @@ AUTH(function($) {
 	}
 
 	if ($.path[0] === 'setup' && !PREF.disconnected && (!PREF.token || $.query.token === PREF.token)) {
-		$.success({ token: PREF.token });
+		$.success({ token: PREF.token, sa: true });
 		return;
 	} else if ($.path[0] === '/' || $.path[0] === 'files' || ($.path[0] && $.websocket)) {
 		var token = $.headers['x-token'] || $.query.token;
