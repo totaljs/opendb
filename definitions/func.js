@@ -10,7 +10,9 @@ FUNC.checksum = function(id) {
 };
 
 FUNC.preparetokens = function() {
+
 	MAIN.tokens = {};
+
 	if (PREF.tokens) {
 		for (var token of PREF.tokens) {
 
@@ -26,6 +28,20 @@ FUNC.preparetokens = function() {
 			MAIN.tokens[obj.token] = obj;
 		}
 	}
+
+	if (MAIN.socket) {
+		for (var key in MAIN.socket.connections) {
+			var client = MAIN.socket.connections[key];
+			if (client.user.token !== PREF.token) {
+				var session = MAIN.tokens[client.user.token];
+				if (session)
+					client.user = session;
+				else
+					client.close(4001);
+			}
+		}
+	}
+
 };
 
 ON('ready', function() {
