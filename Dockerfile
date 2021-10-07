@@ -8,7 +8,7 @@ RUN mkdir -p /www/bundles
 COPY index.js .
 COPY config .
 COPY package.json .
-COPY opendb.bundle ./bundles/
+COPY app.bundle ./bundles/
 
 RUN npm install
 EXPOSE 8000

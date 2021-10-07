@@ -8,8 +8,8 @@ cp -a ../public/ public
 cp -a ../views/ views
 
 # cd ..
-total4 --bundle opendb.bundle
-cp opendb.bundle ../opendb.bundle
+total4 --bundle app.bundle
+cp app.bundle ../app.bundle
 
 cd ..
 rm -rf .bundle

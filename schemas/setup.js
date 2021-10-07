@@ -131,8 +131,13 @@ NEWSCHEMA('Setup', function(schema) {
 	schema.addWorkflow('consumption', function($) {
 		var data = {};
 		var consumption = F.consumption;
-		data.memory = consumption.memory;
-		data.usage = consumption.usage;
+		if (consumption) {
+			data.memory = consumption.memory;
+			data.usage = consumption.usage;
+		} else {
+			data.memory = 0;
+			data.usage = 0;
+		}
 		$.callback(data);
 	});
 

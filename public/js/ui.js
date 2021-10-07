@@ -141,3 +141,15 @@ Thelpers.color=function(value){var hash=HASH(value,true);var color='#';for(var i
 // Updated: 2021-04-06 12:52
 Thelpers.counter=function(value,decimals){if(decimals==null)decimals=0;if(value>999999)return(value/1000000).format(decimals)+' M';if(value>9999)return(value/1000).format(decimals)+' K';return value.format(decimals)};
 // End: Tangular-Counter
+
+// Component: j-FileUploader
+// Version: 1
+// Updated: 2021-08-06 22:42
+COMPONENT('fileuploader',function(self){var input;self.singleton();self.readonly();self.nocompile();self.upload=self.browse=function(opt){self.opt=opt;if(opt.files){self.uploadfiles(opt.files)}else{self.find('input').attr('accept',opt.accept||'*/*').prop('multiple',!!opt.multiple);input[0].value='';input.click()}};self.make=function(){self.aclass('hidden');self.append('<input type="file" multiple />');input=self.find('input');self.event('change','input',function(e){self.uploadfiles(e.target.files);this.value=''})};self.uploadfiles=function(files){var data=new FormData();for(var i=0;i<files.length;i++){var filename=files[i].name,index=filename.lastIndexOf('/');if(index===-1)index=filename.lastIndexOf('\\');if(index!==-1)filename=filename.substring(index+1);data.append((self.opt.prefix||'file{0}').format(i),files[i],filename)}if(self.opt.data){for(var key in self.opt.data)data.append(key,self.opt.data[key])}SETTER('loading/show');UPLOAD(self.opt.url,data,function(response,err){input[0].value='';SETTER('loading/hide',500);if(!response&&err)self.opt.callback(null,err);else if(response instanceof Array&&response[0]&&response[0].error)self.opt.callback(null,response[0].error);else self.opt.callback(response)},self.opt.progress)}});
+// End: j-FileUploader
+
+// Component: j-Loading
+// Version: 1
+// Updated: 2021-02-11 09:46
+COMPONENT('loading',function(self,config,cls){var delay,prev;self.readonly();self.singleton();self.nocompile();self.make=function(){self.aclass(cls+' '+cls+'-'+(config.style||1));self.append('<div><div class="'+cls+'-text hellip"></div></div>')};self.show=function(text){clearTimeout(delay);if(prev!==text){prev=text;self.find('.'+cls+'-text').html(text||'')}self.rclass('hidden');document.activeElement&&document.activeElement.blur();return self};self.hide=function(timeout){clearTimeout(delay);delay=setTimeout(function(){self.aclass('hidden')},timeout||1);return self}});
+// End: j-Loading
