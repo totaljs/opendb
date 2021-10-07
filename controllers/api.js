@@ -4,7 +4,6 @@ const FILTER = 'type:string, id:string, callbackid:string, db:string, take:numbe
 const FILETYPES = { files_read: 1, files_remove: 1, files_browse: 1, inmemory_save: 1, inmemory_remove: 1, inmemory_find: 1, inmemory_read: 1 };
 
 MAIN.inmemorydb = {};
-MAIN.inmemoryfilter = {};
 
 exports.install = function() {
 
@@ -802,6 +801,5 @@ ON('service', function(counter) {
 					delete items[key];
 			}
 		}
-		MAIN.inmemoryfilter = {};
 	}
 });
