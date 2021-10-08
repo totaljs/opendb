@@ -7,17 +7,17 @@ AUTH(function($) {
 		return;
 	}
 
-	if ($.path[0] === 'setup' && !PREF.disconnected && (!PREF.token || $.query.token === PREF.token)) {
+	var token = $.headers['x-token'] || $.query.token || '0';
+
+	if (!PREF.disconnected && ((!PREF.token && $.path[0] !== '/') || PREF.token === token)) {
 		$.success({ token: PREF.token, sa: true });
 		return;
 	} else if ($.path[0] === '/' || $.path[0] === 'files' || ($.path[0] && $.websocket)) {
-		var token = $.headers['x-token'] || $.query.token;
 		var session = MAIN.tokens[token];
 		if (session) {
 			$.success(session);
 			return;
-		}
-		if (!PREF.disconnected && token === PREF.token) {
+		} else if (!PREF.disconnected && PREF.token === token) {
 			$.success({ token: PREF.token, sa: true });
 			return;
 		}

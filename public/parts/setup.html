@@ -8,7 +8,7 @@
 		</label>
 	</header>
 	<div data---="viewbox__common.page__scrollbar:0;visibleY:0;margin:50;parent:window" class="invisible" style="background:#F0F0F0">
-		<div class="centered" style="max-width:840px">
+		<div class="centered" style="max-width:740px">
 			<div data---="viewbox__common.page__parent:auto;margin:120;scrollbar:1;visibleY:1" class="invisible">
 				<div class="padding">
 					<div style="margin-bottom:15px" data-bind="NAV.query.success__show" class="hidden">
@@ -255,13 +255,17 @@
 			opt.element = el;
 			opt.align = 'right';
 			opt.items = [];
+			opt.items.push({ id: 'url', name: '@(Copy URL address)', icon: 'far fa-copy', classname: 'b' });
+			opt.items.push('-');
 			opt.items.push({ id: 'show', name: '@(Show token)', icon: 'fas fa-eye' });
 			opt.items.push({ id: 'copy', name: '@(Copy token)', icon: 'far fa-copy' });
 			opt.items.push({ id: 'edit', name: '@(Edit)', icon: 'fa fa-pencil' });
 			opt.items.push('-');
 			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'fas fa-trash-alt red' });
 			opt.callback = function(selected) {
-				if (selected.id === 'show') {
+				if (selected.id === 'url') {
+					SETTER('clipboard/copy', location.origin + '/?token=' + item.token);
+				} else if (selected.id === 'show') {
 					exports.show(el.closest('section'));
 				} else if (selected.id === 'copy') {
 					SETTER('clipboard/copy', item.token);
