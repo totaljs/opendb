@@ -787,8 +787,10 @@ ON('service', function(counter) {
 
 	if (NOW.getHours() === 0 && NOW.getMinutes() === 0) {
 		for (var key in MAIN.stats) {
-			for (var subkey in MAIN.stats[subkey].today)
-				MAIN.stats[key].today[subkey] = 0;
+			if (MAIN.stats[key].today) {
+				for (var subkey in MAIN.stats[key].today)
+					MAIN.stats[key].today[subkey] = 0;
+			}
 		}
 	}
 
