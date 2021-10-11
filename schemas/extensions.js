@@ -7,7 +7,7 @@ NEWSCHEMA('Extensions', function(schema) {
 		var arr = [];
 
 		for (var item of F.extensions)
-			arr.push({ id: item.id, name: item.name, icon: item.icon, color: item.color, author: item.author, version: item.version, summary: item.summary, setup: item.setup && item.setup.length > 0 ? true : false });
+			arr.push({ id: item.id, name: item.name, icon: item.icon, color: item.color, author: item.author, version: item.version, summary: item.summary, readme: !!item.readme, setup: item.configuration && item.configuration.length > 0 ? true : false });
 
 		$.callback(arr);
 	});
