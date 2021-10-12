@@ -140,8 +140,16 @@ function socket() {
 
 	MAIN.socket = self;
 
+	self.sendmeta = function(client) {
+		var msg = { type: 'init', name: PREF.name, version: MAIN.version, id: 'OpenDB' };
+		if (client)
+			client.send(msg);
+		else
+			self.send(msg);
+	};
+
 	self.on('open', function(client) {
-		client.send({ type: 'init', name: PREF.name, version: MAIN.version });
+		self.sendmeta(client);
 	});
 
 	self.on('message', function(client, msg) {
