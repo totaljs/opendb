@@ -7,6 +7,7 @@ exports.install = function() {
 	ROUTE('API    @setup    -read                      *Setup        --> read');
 	ROUTE('API    @setup    -list                      *Setup        --> list');
 	ROUTE('API    @setup    -usage                     *Setup        --> consumption');
+	ROUTE('API    @setup    -clients                   *Setup        --> clients');
 	ROUTE('API    @setup    -config_read/{id}          *Config       --> read');
 	ROUTE('API    @setup    +config_save               *Config       --> save');
 	ROUTE('API    @setup    -extensions_list           *Extensions   --> list');
