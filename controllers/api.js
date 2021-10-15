@@ -174,13 +174,15 @@ function socket() {
 			PREF.resend && PREF.resend.length && resend(msg);
 
 			db(client.user, model, function(err, response) {
-				var data = {};
-				data.callbackid = model.callbackid;
-				data.response = response;
-				client.send(data);
+				if (model.callbackid) {
+					var data = {};
+					data.callbackid = model.callbackid;
+					data.response = response;
+					client.send(data);
+				}
 			});
 
-		} else
+		} else if (msg.callbackid)
 			client.send({ callbackid: msg.callbackid, error: 'Not supported "type"' });
 	});
 }
